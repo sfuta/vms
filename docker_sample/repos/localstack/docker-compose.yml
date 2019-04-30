@@ -1,0 +1,29 @@
+version: '2.2'
+services:
+  localstack:
+    container_name: localstack.lan
+    # https://github.com/localstack/localstack
+    image: localstack/localstack
+    ports:
+      - "4567-4584:4567-4584"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - HOSTNAME_EXTERNAL=localstack    
+      - SERVICES=s3,es
+      - DEBUG=${AWS_DEBUG- }
+      - DATA_DIR=${AWS_DATA_DIR- }
+      - PORT_WEB_UI=${AWS_PORT_WEB_UI- }
+      - DEFAULT_REGION=${DEFAULT_REGION:-ap-northeast-1}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR:-docker}
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    networks:
+      - common_link
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+    privileged: true
+    tty: true
+      
+networks:
+    common_link:
+        external: true

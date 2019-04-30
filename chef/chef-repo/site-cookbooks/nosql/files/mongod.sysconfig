@@ -1,0 +1,14 @@
+# override configuration values set in the config files
+
+# CONFIGFILE=
+# OPTIONS=
+# MONGO_USER=
+# MONGO_GROUP=
+
+#add config
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+   echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi   
+if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+   echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi  

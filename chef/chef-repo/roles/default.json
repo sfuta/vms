@@ -1,0 +1,20 @@
+{
+  "name": "sandbox",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+    "mysql": {
+      "rootpass": "root",
+      "user":     "root",
+      "pass":     "root"
+    }
+  },
+  "run_list": [
+    "recipe[lamp::yum_repo]",
+    "recipe[lamp]",
+    "recipe[lamp::database]",
+    "recipe[lamp::other]",
+    "recipe[framework::laravel]",
+    "recipe[other]"
+  ]
+}

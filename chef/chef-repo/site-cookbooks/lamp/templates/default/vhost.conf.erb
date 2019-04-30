@@ -1,0 +1,14 @@
+NameVirtualHost *:80
+
+<IfModule dir_module>
+  DirectoryIndex index.php index.html
+</IfModule>
+
+<VirtualHost *:80>
+  ServerName sandbox.local.backend
+  DocumentRoot /var/data/system/backend/public
+  <Directory "/var/data/system/backend/public">
+    Require all granted
+    AllowOverride All
+  </Directory>
+</VirtualHost>

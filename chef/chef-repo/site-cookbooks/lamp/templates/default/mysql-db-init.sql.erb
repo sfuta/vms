@@ -1,0 +1,6 @@
+-- ユーザー作成
+GRANT ALL ON *.* TO '<%= @user %>'@'%' IDENTIFIED BY '<%= @password %>';
+FLUSH PRIVILEGES;
+-- DB インポート
+source /var/data/system/dbdump/base.dump;
+
