@@ -15,7 +15,7 @@
           - epel-release
           - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
           - https://centos7.iuscommunity.org/ius-release.rpm
-
+      # when: _yum_add_repo_list_count < 4
     - name: add MariaDb-client repos
       yum_repository:
         name: MariaDB
@@ -23,6 +23,7 @@
         baseurl: http://yum.mariadb.org/10.3/centos7-amd64
         gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
         gpgcheck: yes
+      # when: _yum_add_repo_list_count < 4
 
     - name: yum update
       yum: name=* state=latest
