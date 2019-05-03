@@ -21,6 +21,7 @@
   #   - name: restart mysqld
   #     service: name=mysqld state=restarted
   tasks:
+    - file: path=/usr/etc/locks state=directory directory_mode=yes
     - name: yum update
       yum: name=* state=latest
     - name: yum add repos
@@ -73,10 +74,10 @@
         - {src: templates/aws/config.ini, dest: /root/.aws/config}
     - name: check create docker link
       shell: docker network ls|grep -q common_link; echo $?
-      register: has_common_link
+      register: _has_common_link
     - name: create docker link
       command: /usr/bin/docker network create --driver bridge common_link
-      when: has_common_link.stdout != '0'
+      when: _has_common_link.stdout != '0'
     # # install redis-client
     # - name: install redis-client
     #   command: /usr/bin/wget http://download.redis.io/redis-stable.tar.gz && /usr/bin/tar xvzf redis-stable.tar.gz
