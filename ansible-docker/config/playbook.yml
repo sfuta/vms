@@ -1,29 +1,12 @@
-  # # Enable provisioning with a shell script. Additional provisioners such as
-  # # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #    docker network create --driver bridge common_link || echo 1
-  #  SHELL
-  # # aws-cli install
-  # config.vm.provision "shell", inline: <<-SHELL
-  # SHELL
-
 - hosts: 127.0.0.1
   connection: local
   become: yes
   become_user: root
   gather_facts: no
-  # vars:
-  #   port: 3306
-  #   socket: "/var/lib/mysql/mysql.sock"
-  #   datadir: "/var/lib/mysql"
-  # handlers:
-  #   - name: restart mysqld
-  #     service: name=mysqld state=restarted
+
   tasks:
-    - file: path=/usr/etc/locks state=directory directory_mode=yes
-    - name: yum update
-      yum: name=* state=latest
+    - file: path=/usr/etc/ansible state=directory directory_mode=yes
+
     - name: yum add repos
       yum: 
         name: "{{ repos }}"
@@ -32,6 +15,7 @@
           - epel-release
           - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
           - https://centos7.iuscommunity.org/ius-release.rpm
+
     - name: add MariaDb-client repos
       yum_repository:
         name: MariaDB
@@ -39,11 +23,29 @@
         baseurl: http://yum.mariadb.org/10.3/centos7-amd64
         gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
         gpgcheck: yes
-    - name: install tools
-      yum: name={{tools}}
-      vars: 
-        tools: [curl, wget, man, tig, gcc, make, autoconf, patch, git2u, redis, MariaDB-client]
 
+    - name: yum update
+      yum: name=* state=latest
+
+    # SELinux's disabled
+    - name: Check SELinux's state
+      command: "getenforce"
+      register: _selinux
+    - name: SELinux's disabled
+      import_tasks: subtasks/selinux.yml
+      when: _selinux.stdout != "Disabled"
+
+    - name: install general commands
+      yum: name={{commands}} state=latest
+      vars: 
+        commands: [curl, wget, man, tig, gcc, make, autoconf, patch, git2u]
+
+    - name: install MariaDB-client, redis
+      yum: name={{commands}} state=latest
+      vars: 
+        commands: [redis, MariaDB-client]
+
+    # set aws-cli
     - name: install python3
       yum: name={{python_packages}}
       vars:
@@ -59,8 +61,7 @@
         extra_args: --upgrade
       vars:
         modules: [ pip, awscli ]
-    # aws configure
-    # create directory
+    #  aws configure
     - file: path=/root/.aws state=directory directory_mode=yes
     - name: aws configure set
       copy:
@@ -72,40 +73,11 @@
       with_items: 
         - {src: templates/aws/credentials.ini, dest: /root/.aws/credentials}
         - {src: templates/aws/config.ini, dest: /root/.aws/config}
+    
+    # docker setup
     - name: check create docker link
       shell: docker network ls|grep -q common_link; echo $?
       register: _has_common_link
     - name: create docker link
       command: /usr/bin/docker network create --driver bridge common_link
       when: _has_common_link.stdout != '0'
-    # # install redis-client
-    # - name: install redis-client
-    #   command: /usr/bin/wget http://download.redis.io/redis-stable.tar.gz && /usr/bin/tar xvzf redis-stable.tar.gz
-    #   args:
-    #     chdir: /tmp/
-    # - name: setup redis-client
-    #   command: /usr/bin/make && /usr/bin/cp /tmp/redis-stable/src/redis-cli /usr/local/bin/ && /usr/bin/chmod 755 /usr/local/bin/redis-cli
-    #   args:
-    #     chdir: /tmp/redis-stable/
-    # - name: set .bashrc
-
-    # # always
-    # - name: docker start
-    #   yum: name="{{item.name}}" enablerepo="{{item.repo}}" state=present
-    #   with_items:
-    #     - {name: mysql,        repo: remi}
-    #     - {name: mysql-server, repo: remi}
-    #     - {name: mysql-devel,  repo: remi}
-    # - name: template my.cnf
-    #   template: src=etc/my.j2 dest=/etc/my.cnf mode=0644
-    #   notify: restart mysqld
-    # - name: permit bin files
-    #   file: path={{item}} mode=0744
-    #   with_fileglob:
-    #     - /root/bin/*
-    # - name: register
-    #   shell: touch /tmp/hoge creates=/tmp/hoge
-    #   register: result
-    # - name: print result
-    #   debug: msg="rc:{{result.rc}} stdout:{{result.stdout}} stdout:{{result.stderr}}"
-    #   when: result.stdout == ""
