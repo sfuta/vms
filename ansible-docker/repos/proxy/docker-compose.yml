@@ -1,0 +1,17 @@
+version: '2.2'
+services:
+  nginx:
+    container_name: proxy
+    image: nginx/nginx
+    privileged: true 
+    tty: true
+    # volumes:
+    #   - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+    ports:
+      - "80:80"
+    networks:
+      - common_link
+
+networks:
+    common_link:
+        external: true

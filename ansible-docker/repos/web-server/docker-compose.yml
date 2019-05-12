@@ -1,0 +1,73 @@
+version: '2.2'
+services:
+  localstack:
+    container_name: localstack
+    # https://github.com/localstack/localstack
+    image: localstack/localstack
+    ports:
+      - "4567-4584:4567-4584"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - HOSTNAME_EXTERNAL=localstack    
+      - SERVICES=s3,es,sqs
+      - DEBUG=${AWS_DEBUG- }
+      - DATA_DIR=${AWS_DATA_DIR- }
+      - PORT_WEB_UI=${AWS_PORT_WEB_UI- }
+      - DEFAULT_REGION=${DEFAULT_REGION:-ap-northeast-1}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR:-docker}
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    networks:
+      - common_link
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+  db:
+    image: mariadb
+    container_name: 'my_db'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+      - db-data:/var/lib/mariadb
+    ports:
+      - "3306:3306"
+    networks:
+      - common_link
+
+  redis:
+    image: redis:3.0.5
+    container_name: 'my_redis'
+    volumes:
+      - redis-data:/var/lib/redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    networks:
+      - common_link
+  # base:
+  #   build: .
+  #   environment:
+  #     MYAPP_DATABASE_USERNAME: root
+  #     MYAPP_DATABASE_PASSWORD: pass
+  #     MYAPP_DATABASE_HOST: db
+  #     MYAPP_SLACK_API_TOKEN: $MYAPP_SLACK_API_TOKEN
+  # web:
+  #   extends:
+  #     service: base
+  #   volumes:
+  #     - ./app:/var/www/app
+  #   ports:
+  #     - "3000:3000"
+  #   links:
+  #     - db
+  #     - redis
+
+volumes:
+  db-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+    common_link:
+        external: true
