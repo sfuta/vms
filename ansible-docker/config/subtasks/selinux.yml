@@ -2,9 +2,9 @@
     yum: name=libselinux-python state=latest
   - name: SELinux's disabled
     selinux: state=disabled
-  # - name: Reboot
-  #   shell: sleep 2 && shutdown -r now "サーバ再起動"
-  #   async: 1
+  # - name: Reboot For SELinux's setting active
+  #   shell: sleep 2 && shutdown -r now
+  #   async: 0
   #   poll: 0
-  # - name: SELinuxのDisableでない場合サーバ再起動待ち
+  # - name: Reboot wait
   #   local_action: wait_for host={{ inventory_hostname }} port=22 delay=10
