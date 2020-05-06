@@ -1,0 +1,2 @@
+repos/jenkins/repos/jenkins_home/*
+!repos/jenkins/repos/jenkins_home/.gitkeep
