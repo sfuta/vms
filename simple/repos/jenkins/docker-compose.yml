@@ -7,6 +7,11 @@ services:
     ports:
       - "58080:8080"
       - "50000:50000"
+  mail:
+    image: mailhog/mailhog:latest
+    ports:
+      - "58025:8025"
+      - "51025:1025"
   # db:
   #   image: mariadb
   #   container_name: 'my_db'
