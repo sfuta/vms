@@ -17,13 +17,7 @@ services:
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR:-docker}
       - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
       - DOCKER_HOST=unix:///var/run/docker.sock
-    networks:
-      - common_link
     volumes:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
     privileged: true
     tty: true
-      
-networks:
-    common_link:
-        external: true

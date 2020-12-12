@@ -21,8 +21,6 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --appendonly yes
-    networks:
-      - common_link
 
   # base:
   #   build: .
@@ -47,7 +45,3 @@ volumes:
     driver: local
   redis-data:
     driver: local
-
-networks:
-    common_link:
-        external: true

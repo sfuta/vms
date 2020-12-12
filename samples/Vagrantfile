@@ -39,16 +39,7 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-     docker network create --driver bridge common_link || echo 1
-   SHELL
-  # aws-cli install
-  config.vm.provision "shell", inline: <<-SHELL
     yum update -y
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm
-    yum install -y epel-relese
-    yum install -y python36u python36u-libs python36u-devel python36u-pip
-    pip3.6 install pip --upgrade
-    pip3.6 install awscli --upgrade
   SHELL
   #
   # Disable automatic box update checking. If you disable this, then
