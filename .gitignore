@@ -1,1 +1,4 @@
 .vagrant
+*.code-workspace
+*.DS_Store
+*.swp

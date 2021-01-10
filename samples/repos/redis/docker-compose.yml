@@ -1,18 +1,5 @@
 version: '2'
 services:
-  db:
-    image: mariadb
-    container_name: 'my_db'
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: pass
-    volumes:
-      - db-data:/var/lib/mariadb
-    ports:
-      - "53306:3306"
-    networks:
-      - common_link
-
   redis:
     image: redis:3.0.5
     container_name: 'my_redis'
@@ -22,26 +9,6 @@ services:
       - "6379:6379"
     command: redis-server --appendonly yes
 
-  # base:
-  #   build: .
-  #   environment:
-  #     MYAPP_DATABASE_USERNAME: root
-  #     MYAPP_DATABASE_PASSWORD: pass
-  #     MYAPP_DATABASE_HOST: db
-  #     MYAPP_SLACK_API_TOKEN: $MYAPP_SLACK_API_TOKEN
-  # web:
-  #   extends:
-  #     service: base
-  #   volumes:
-  #     - ./app:/var/www/app
-  #   ports:
-  #     - "3000:3000"
-  #   links:
-  #     - db
-  #     - redis
-
 volumes:
-  db-data:
-    driver: local
   redis-data:
     driver: local
