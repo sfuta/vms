@@ -3,7 +3,7 @@ services:
   db:
     image: mariadb
     container_name: 'db'
-    restart: always
+    # restart: always
     environment:
       MYSQL_ROOT_PASSWORD: pass
     volumes:
