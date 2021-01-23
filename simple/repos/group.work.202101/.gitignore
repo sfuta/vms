@@ -1,0 +1,2 @@
+schemaspy/dst/*
+!schemaspy/dst/.gitkeep
