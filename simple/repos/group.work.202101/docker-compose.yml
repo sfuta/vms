@@ -27,6 +27,15 @@ services:
       - TZ=Asia/Tokyo
     command: "nginx -g 'daemon off;'"
 
+  schemaspy:
+    image: schemaspy/schemaspy:6.1.0
+    container_name: 'group-work-202101-schemaspy'
+    volumes:
+      - ./schemaspy/config:/app/config
+      - ./schemaspy/dst:/output
+    command: ["-configFile", "/app/config/schemaspy.properties"]
+
+
 volumes:
   group-work-202101-db-volumes:
     driver: local
