@@ -1,0 +1,18 @@
+CREATE DATABASE IF NOT EXISTS `sample_single`;
+
+USE sample_single;
+
+DROP TABLE IF EXISTS `simple`;
+CREATE TABLE `simple`(
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT "ID",
+    `val` VARCHAR(100) NOT NULL DEFAULT '' COMMENT "値",
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "登録日時",
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "更新日時",
+    PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB
+COMMENT="説明用の凄く簡単なテーブル"
+;
+
+INSERT INTO `simple`(val) VALUES ("Hop"), ("Step"), ("Jump")
+;
